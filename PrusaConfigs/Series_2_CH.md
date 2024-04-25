@@ -23,12 +23,20 @@ M109 T0 S{first_layer_temperature[0]} ; греем сопло
 
 Для маленьких принтеров температура ограничего 80 градусами, для больших - 90
 
+## Двухсопельная печать
+
+Если нужно выбрать меньшую температуру стола, то добавляем сравнение температур стола
 
 Стартовый G-code
 ```
+{if first_layer_bed_temperature[1]>first_layer_bed_temperature[0]}M140 S{first_layer_bed_temperature[0]}{else}M140 S{first_layer_bed_temperature[1]}{endif} ; сравниваем температуры стола
+M104 T0 S120
+M104 T1 S120
+M141 S80 ; преднагрев камеры
+G28 ; home all axes
+G0 F600 X180 Y180 Z80
 {if first_layer_bed_temperature[1]>first_layer_bed_temperature[0]}M190 S{first_layer_bed_temperature[0]}{else}M190 S{first_layer_bed_temperature[1]}{endif} ; сравниваем температуры стола
+M191 S80 ; греем камеру
 M109 T0 S{first_layer_temperature[0]}
 M109 T1 S{first_layer_temperature[1]}
-G28 ; home all axes
-G1 Z5 F5000 ; lift nozzle
 ```
